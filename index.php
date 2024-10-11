@@ -1,1 +1,4 @@
-git add .
+<?php
+echo "Olá, mundo!";
+
+?>
