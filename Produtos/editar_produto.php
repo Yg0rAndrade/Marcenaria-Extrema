@@ -26,15 +26,15 @@
     <div">
         <div>
             <label for="">ID do Produto</label>
-            <input type="text">                
-        </div>
-        <div>
-            <label for="">Nome</label>
             <input type="number">                
         </div>
         <div>
+            <label for="">Nome</label>
+            <input type="text">                
+        </div>
+        <div>
             <label for="">Preço</label>
-            <input type="text">
+            <input type="number">
         </div>
         <div>
             <label for="">Descrição</label>
