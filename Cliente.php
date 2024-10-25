@@ -1,7 +1,7 @@
 <?php
     class Cliente{
         private $pdo;
-
+        private $dump;
         public function __construct($pdo){
             $this->pdo = $pdo;
         }
