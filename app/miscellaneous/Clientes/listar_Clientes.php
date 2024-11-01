@@ -39,7 +39,7 @@ $data = json_decode($result, true);
 if (is_array($data)) {
     echo "<ul>";
     foreach ($data as $cliente) {
-        echo "<li>Nome: " . htmlspecialchars($cliente['nome']) . ", Telefone: " . htmlspecialchars($cliente['telefone'])  . " <a href='editar_cliente.php?id_cliente=" . htmlspecialchars($cliente['id_cliente']) . "'>Editar</a></li>";
+        echo "<li>Nome: " . htmlspecialchars($cliente['nome']) . ", Telefone: " . htmlspecialchars($cliente['telefone'])  . " <a href='editar_cliente.php?id_cliente=" . htmlspecialchars($cliente['id_cliente']) . "'>Editar</a>. <a href='deletar_cliente.php?id_cliente=" . htmlspecialchars($cliente['id_cliente']) . "'>Deletar</a></li>";
     }
     echo "</ul>";
 } else {
