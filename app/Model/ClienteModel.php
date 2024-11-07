@@ -41,8 +41,6 @@ class ClienteModel extends Db
 
         $url = parent::$supabaseURL . 'cliente' . '?select=*'; // Endpoint para buscar todos os registros
 
-
-
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_POST, true);
