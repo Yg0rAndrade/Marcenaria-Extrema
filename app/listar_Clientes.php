@@ -1,7 +1,6 @@
 <?php
 
-
-$apiUrl = 'https://inftqfcizgvxntcipxvr.supabase.co'; // URL base da sua instância do Supabase, certifique-se de incluir 'https://'/
+$apiUrl = 'https://inftqfcizgvxntcipxvr.supabase.co'; // URL base da sua instância do Supabase
 $apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImluZnRxZmNpemd2eG50Y2lweHZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg2MDYwNDcsImV4cCI6MjA0NDE4MjA0N30.NHgOyD8rgby8R5n0ebhAe_sdle5wpUzNgwI8oF4ezt4'; 
 $tableName = 'cliente'; 
 
@@ -19,7 +18,7 @@ function supabaseGet($apiUrl, $apiKey, $tableName) {
     ]);
     
     // Adicionar o caminho para o arquivo cacert.pem
-    curl_setopt($ch, CURLOPT_CAINFO, $_SERVER['DOCUMENT_ROOT'].'/poo/marcenaria_extrema/app/config/cacert.pem');
+    curl_setopt($ch, CURLOPT_CAINFO, 'C:\wamp64\www\poo\test_marcenaria\cacert.pem');
 
     $response = curl_exec($ch);
     if(curl_errno($ch)) {
@@ -32,11 +31,17 @@ function supabaseGet($apiUrl, $apiKey, $tableName) {
 
 // Exemplo de uso
 $result = supabaseGet($apiUrl, $apiKey, $tableName);
-var_dump($result) ;
 
-require_once 'Model/ClienteModel.php';
+// Decodifica o JSON para um array associativo
+$data = json_decode($result, true);
 
-$cliente = new ClienteModel();
-
-$clientes = $cliente->getAllClientes();
-var_dump ($clientes);
+// Exibe os dados em uma lista
+if (is_array($data)) {
+    echo "<ul>";
+    foreach ($data as $cliente) {
+        echo "<li>Nome: " . htmlspecialchars($cliente['nome']) . ", Telefone: " . htmlspecialchars($cliente['telefone']) . "</li>";
+    }
+    echo "</ul>";
+} else {
+    echo "Erro ao buscar dados ou resposta inválida.";
+}
