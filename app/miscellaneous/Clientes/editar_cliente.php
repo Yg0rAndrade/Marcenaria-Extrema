@@ -24,56 +24,23 @@
 </form>
 
 <?php
-if (isset($_POST['submit'])) {
-    // Defina a API Key uma vez
-    $apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImluZnRxZmNpemd2eG50Y2lweHZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg2MDYwNDcsImV4cCI6MjA0NDE4MjA0N30.NHgOyD8rgby8R5n0ebhAe_sdle5wpUzNgwI8oF4ezt4';
+    if (isset($_POST['submit'])) {
+        require_once '../../Model/ClienteModel.php';
 
-    // Coletar dados do formulário
-    $clienteId = $_GET['id_cliente'];
-    $nome = $_POST['nome'];
-    $telefone = $_POST['telefone'];
-    $dataNascimento = $_POST['data_nascimento'];
+        // Coletar dados do formulário
+        $clienteId = $_GET['id_cliente'];
+        $nome = $_POST['nome'];
+        $telefone = $_POST['telefone'];
+        $dataNascimento = $_POST['data_nascimento'];
 
-    // URL da API para o cliente específico
-    $apiUrl = 'https://inftqfcizgvxntcipxvr.supabase.co/rest/v1/cliente?id_cliente=eq.' . $clienteId;
-    
+        $cliente = new ClienteModel();
 
-    // Dados em formato JSON
-    $data = json_encode([
-        "nome" => $nome,
-        "telefone" => $telefone,
-        "data_nascimento" => $dataNascimento
-    ]);
+        // Edita o cliente chamando a função e passando os dados
+        $response = $cliente->editarClientes($clienteId, $nome, $telefone,$dataNascimento);
 
-    // Iniciar cURL
-    $ch = curl_init($apiUrl);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PATCH"); // Mudar para PATCH
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'apikey: ' . $apiKey,
-        'Authorization: Bearer ' . $apiKey,
-        'Content-Type: application/json',
-        'Prefer: return=minimal'
-    ]);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-
-    // Adicionar o caminho para o arquivo cacert.pem para resolver problemas SSL
-    curl_setopt($ch, CURLOPT_CAINFO, 'C:\wamp64\www\pooii\Projeto\cacert.pem');
-
-    // Executar e checar resposta
-    $response = curl_exec($ch);
-    if (curl_errno($ch)) {
-        echo 'Erro cURL: ' . curl_error($ch);
-    } else {
-        // Verificar a resposta da API
-        if ($httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE) === 204) {
-            echo "Cliente editado com sucesso!";
-        } else {
-            echo "Erro ao editar o cliente: " . $response; // Exibir resposta de erro se necessária
-        }
+    // Exibir resposta, se necessário
+    echo $response;
     }
-    curl_close($ch);
-}
 ?>
 
 </body>

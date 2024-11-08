@@ -33,13 +33,12 @@
         $telefone = $_POST['telefone'];
         $dataNascimento = $_POST['data_nascimento'];
 
-        // Dados em formato JSON
-        $data = json_encode([
-            "nome" => $nome,
-            "telefone" => $telefone,
-            "data_nascimento" => $dataNascimento
-        ]);
+        $cliente = new ClienteModel();
 
+        // Adiciona o cliente chamando a função e passando os dados
+        // Código apresenta erro pois a função está comentada
+        $response = $cliente->adicionarCliente($nome, $telefone, $dataNascimento);
+        
     }
     ?>
 
