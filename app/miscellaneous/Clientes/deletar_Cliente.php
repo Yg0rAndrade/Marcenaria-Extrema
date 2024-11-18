@@ -2,15 +2,12 @@
 if (isset($_GET['id_cliente'])) {
     require_once '../../Model/ClienteModel.php';    
 
-    // Coletar dados do formulário
+    //Coleta o id do cliente que será deletado.
     $clienteId = $_GET['id_cliente'];
     echo $clienteId;
     $cliente = new ClienteModel();
     
-    // Edita o cliente chamando a função e passando os dados
+    //Função que irá remover o cliente.
     $response = $cliente->deletarCliente($clienteId);
-
-// Exibir resposta, se necessário
-echo $response;
 }    
 ?>

@@ -1,56 +1,72 @@
 <?php
-include_once 'Db.php';
+include_once "db.php";
 
 class ClienteModel extends Db
 {
-    private $tableName = 'cliente';
+    public function insertEndereco(
+        $logradouro,
+        $bairro,
+        $cidade,
+        $cep,
+        $numero,
+        $complemento,
+        $estado
+    ) {
+        $url = parent::$supabaseURL . "endereco";
 
-    public function teste()
-    {
-        return parent::$supabaseURL;
-    }
-
-    public function getAllClientes()
-    {
-
-        $url = parent::$supabaseURL . 'cliente' . '?select=*'; // Endpoint para buscar todos os registros
-
+        $data = [
+            "logradouro" => $logradouro,
+            "bairro" => $bairro,
+            "cidade" => $cidade,
+            "cep" => $cep,
+            "numero" => $numero,
+            "complemento" => $complemento,
+            "estado" => $estado,
+        ];
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'apikey: ' . parent::$apiKey,
-            'Authorization: ' . parent::$authorization,
-            'Content-Type: application/json'
+            "apikey: " . parent::$apiKey,
+            "Authorization: " . parent::$authorization,
+            "Content-Type: application/json",
+            "Prefer: return=representation",
         ]);
-
-        // Adicionar o caminho para o arquivo cacert.pem
-        curl_setopt($ch, CURLOPT_CAINFO, $_SERVER['DOCUMENT_ROOT'] . parent::$path);
-
+        curl_setopt(
+            $ch,
+            CURLOPT_CAINFO,
+            $_SERVER["DOCUMENT_ROOT"] . parent::$path
+        );
         $response = curl_exec($ch);
         if (curl_errno($ch)) {
-            echo 'Erro cURL: ' . curl_error($ch);
+            echo "Erro cURL: " . curl_error($ch);
         }
         curl_close($ch);
-
-        return $response;
-
-        /* Código modificado para retornar como lista, no meu arquivo, o return $response não existe mais.
         $data = json_decode($response, true);
-
-        return $data;
-        */
-
+        return $data[0]["id_endereco"];
     }
 
-    public function insertCliente($nome, $telefone, $data_nascimento)
-    {
-        $url = parent::$supabaseURL . 'cliente'; // Endpoint para inserir um novo registro
-
+    // Método para inserir o cliente
+    public function insertCliente(
+        $nome,
+        $telefone,
+        $data_nascimento,
+        $sobrenome,
+        $cpf_cnpj,
+        $id_endereco,
+        $email
+    ) {
+        $url = parent::$supabaseURL . "cliente";
         $data = [
-            'nome' => $nome,
-            'telefone' => $telefone,
-            'data_nascimento' => $data_nascimento
+            "nome" => $nome,
+            "telefone" => $telefone,
+            "data_nascimento" => $data_nascimento,
+            "sobrenome" => $sobrenome,
+            "cpf_cnpj" => $cpf_cnpj,
+            "id_endereco" => $id_endereco,
+            "email" => $email,
         ];
 
         $ch = curl_init();
@@ -59,246 +75,268 @@ class ClienteModel extends Db
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'apikey: ' . parent::$apiKey,
-            'Authorization: ' . parent::$authorization,
-            'Content-Type: application/json'
+            "apikey: " . parent::$apiKey,
+            "Authorization: " . parent::$authorization,
+            "Content-Type: application/json",
         ]);
 
-        // Adicionar o caminho para o arquivo cacert.pem
-        curl_setopt($ch, CURLOPT_CAINFO, $_SERVER['DOCUMENT_ROOT'] . parent::$path);
-
+        curl_setopt(
+            $ch,
+            CURLOPT_CAINFO,
+            $_SERVER["DOCUMENT_ROOT"] . parent::$path
+        );
         $response = curl_exec($ch);
         if (curl_errno($ch)) {
-            echo 'Erro cURL: ' . curl_error($ch);
+            echo "Erro cURL: " . curl_error($ch);
         }
         curl_close($ch);
-
         return $response;
     }
 
-    public function updateCliente($id_cliente, $nome, $telefone, $data_nascimento)
+    public function insertClienteComEndereco(
+        $nome,
+        $telefone,
+        $data_nascimento,
+        $sobrenome,
+        $cpf_cnpj,
+        $email,
+        $logradouro,
+        $bairro,
+        $cidade,
+        $cep,
+        $numero,
+        $complemento,
+        $estado
+    ) {
+        $id_endereco = $this->insertEndereco(
+            $logradouro,
+            $bairro,
+            $cidade,
+            $cep,
+            $numero,
+            $complemento,
+            $estado
+        );
+        $response = $this->insertCliente(
+            $nome,
+            $telefone,
+            $data_nascimento,
+            $sobrenome,
+            $cpf_cnpj,
+            $id_endereco,
+            $email
+        );
+        return $response;
+    }
+    public function getAllClientes()
     {
-        $url = parent::$supabaseURL . 'cliente?id_cliente=eq.' . $id_cliente; // Endpoint para atualizar um registro específico
-
-        $data = [
-            'nome' => $nome,
-            'telefone' => $telefone,
-            'data_nascimento' => $data_nascimento
-        ];
-
+        $url = parent::$supabaseURL . "clientes_ativos" . "?select=*";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'apikey: ' . parent::$apiKey,
-            'Authorization: ' . parent::$authorization,
-            'Content-Type: application/json'
+            "apikey: " . parent::$apiKey,
+            "Authorization: " . parent::$authorization,
+            "Content-Type: application/json",
         ]);
-
-        // Adicionar o caminho para o arquivo cacert.pem
-        curl_setopt($ch, CURLOPT_CAINFO, $_SERVER['DOCUMENT_ROOT'] . parent::$path);
+        curl_setopt(
+            $ch,
+            CURLOPT_CAINFO,
+            $_SERVER["DOCUMENT_ROOT"] . parent::$path
+        );
 
         $response = curl_exec($ch);
         if (curl_errno($ch)) {
-            echo 'Erro cURL: ' . curl_error($ch);
+            echo "Erro cURL: " . curl_error($ch);
         }
         curl_close($ch);
 
-        return $response;
+        $data = json_decode($response, true);
+
+        return $data;
     }
-
-    public function deleteCliente($id_cliente)
+    public function getoneClient($id)
     {
-        $url = parent::$supabaseURL . 'cliente?id_cliente=eq.' . $id_cliente; // Endpoint para deletar um registro específico
-
+        $url = parent::$supabaseURL . "cliente" ."?id_cliente=eq.$id" ."&select=";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE'); // Define a requisição como DELETE
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'apikey: ' . parent::$apiKey,
-            'Authorization: ' . parent::$authorization,
-            'Content-Type: application/json'
+            "apikey: " . parent::$apiKey,
+            "Authorization: " . parent::$authorization,
+            "Content-Type: application/json",
         ]);
-
-        // Adicionar o caminho para o arquivo cacert.pem
-        curl_setopt($ch, CURLOPT_CAINFO, $_SERVER['DOCUMENT_ROOT'] . parent::$path);
+        curl_setopt(
+            $ch,
+            CURLOPT_CAINFO,
+            $_SERVER["DOCUMENT_ROOT"] . parent::$path
+        );
 
         $response = curl_exec($ch);
         if (curl_errno($ch)) {
-            echo 'Erro cURL: ' . curl_error($ch);
+            echo "Erro cURL: " . curl_error($ch);
         }
         curl_close($ch);
 
-        return $response;
+        $data = json_decode($response, true);
+
+        return $data;
+    }
+    public function getoneEndereco($id)
+{
+    // Define a URL para buscar o endereço
+    $url = parent::$supabaseURL . "endereco" . "?id_endereco=eq.$id" . "&select=*";
+    $ch = curl_init();
+
+    // Configurações do cURL
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "apikey: " . parent::$apiKey,
+        "Authorization: " . parent::$authorization,
+        "Content-Type: application/json",
+    ]);
+    curl_setopt(
+        $ch,
+        CURLOPT_CAINFO,
+        $_SERVER["DOCUMENT_ROOT"] . parent::$path
+    );
+
+    // Executa a requisição
+    $response = curl_exec($ch);
+
+    // Verifica por erros no cURL
+    if (curl_errno($ch)) {
+        echo "Erro cURL: " . curl_error($ch);
     }
 
+    // Fecha a conexão
+    curl_close($ch);
 
+    // Decodifica a resposta JSON para um array associativo
+    $data = json_decode($response, true);
 
-
-    /* public function adicionarCliente() //Adiciona um cliente
-    {
-
-        $url = parent::$supabaseURL . 'cliente' . '?select=*'; // Endpoint para buscar todos os registros
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'apikey: ' . parent::$apiKey,
-            'Authorization: Bearer ' . parent::$apiKey,
-            'Content-Type: application/json',
-            'Prefer: return=minimal'
-        ]);
-        
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-
-        // Adicionar o caminho para o arquivo cacert.pem para resolver problemas SSL
-       curl_setopt($ch, CURLOPT_CAINFO, $_SERVER['DOCUMENT_ROOT'] . '/poo/Projeto/app/config/cacert.pem');
+    return $data;
+}
+public function updateCliente(
+    $id_cliente,
+    $nome,
+    $sobrenome,
+    $email,
+    $cpf_cnpj,
+    $telefone,
+    $data_nascimento
+) {
+    $url = parent::$supabaseURL . "cliente?id_cliente=eq." . $id_cliente;
+    $data = [
+        "nome" => $nome,
+        "sobrenome" => $sobrenome,  
+        "email" => $email,          
+        "cpf_cnpj" => $cpf_cnpj,    
+        "telefone" => $telefone,
+        "data_nascimento" => $data_nascimento,
+    ];
     
-        // Executar e checar resposta
-        $response = curl_exec($ch);
-        if (curl_errno($ch)) {
-            echo 'Erro cURL: ' . curl_error($ch);
-        }else{
-            echo 'Cliente cadastrado com sucesso!';
-        }
-        curl_close($ch);
-
-        return $response;
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PATCH");
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "apikey: " . parent::$apiKey,
+        "Authorization: " . parent::$authorization,
+        "Content-Type: application/json",
+    ]);
+    curl_setopt(
+        $ch,
+        CURLOPT_CAINFO,
+        $_SERVER["DOCUMENT_ROOT"] . parent::$path
+    );
+    $response = curl_exec($ch);
+    
+    if (curl_errno($ch)) {
+        echo "Erro cURL: " . curl_error($ch);
     }
-*/
-
-/* CÓDIGO ADICIONADO PELO MICKAEL --> Funções adicionadas. Essas funções são chamadas quando o botão de criar,
-editar e deletar são pressionados 
-
-
-    public function adicionarCliente($nome, $telefone, $dataNascimento) //Adiciona um cliente
-    {
-
-        $url = parent::$supabaseURL . 'cliente' . '?select=*'; // Endpoint para buscar todos os registros
-
-        $data = json_encode([
-            "nome" => $nome,
-            "telefone" => $telefone,
-            "data_nascimento" => $dataNascimento
-        ]);
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'apikey: ' . parent::$apiKey,
-            'Authorization: Bearer ' . parent::$apiKey,
-            'Content-Type: application/json',
-            'Prefer: return=minimal'
-        ]);
-        
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-
-        // Adicionar o caminho para o arquivo cacert.pem para resolver problemas SSL
-       curl_setopt($ch, CURLOPT_CAINFO, $_SERVER['DOCUMENT_ROOT'] . 'parent::$path');
     
-        // Executar e checar resposta
-        $response = curl_exec($ch);
-        if (curl_errno($ch)) {
-            echo 'Erro cURL: ' . curl_error($ch);
-        }else{
-            echo 'Cliente cadastrado com sucesso!';
-        }
-        curl_close($ch);
+    curl_close($ch);
 
-        return $response;
+    return $response;
+}
+public function deleteCliente($id_cliente) {
+    $url = parent::$supabaseURL . "cliente?id_cliente=eq." . $id_cliente;
+    $data = [
+        "deletado" => true
+    ];
+    
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PATCH");
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "apikey: " . parent::$apiKey,
+        "Authorization: " . parent::$authorization,
+        "Content-Type: application/json",
+    ]);
+    curl_setopt($ch, CURLOPT_CAINFO, $_SERVER["DOCUMENT_ROOT"] . parent::$path);
+    
+    $response = curl_exec($ch);
+    
+    if (curl_errno($ch)) {
+        echo "Erro cURL: " . curl_error($ch);
     }
+    
+    curl_close($ch);
 
-    public function editarClientes($clienteId, $nome, $telefone, $dataNascimento) {
-        $url = parent::$supabaseURL . 'cliente?id_cliente=eq.' . $clienteId; // Endpoint para editar um cliente específico
-    
-        // Dados em formato JSON
-        $data = json_encode([
-            "nome" => $nome,
-            "telefone" => $telefone,
-            "data_nascimento" => $dataNascimento
-        ]);
- 
-        // Depuração para verificar os dados que estão sendo enviados
-        echo "Dados que estão sendo enviados: " . $data .$clienteId. "<br>";
+    return $response;
+}
 
-        // Iniciar cURL
-        $ch = curl_init();
-        
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PATCH"); // Mudança para PATCH
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'apikey: ' . parent::$apiKey,
-            'Authorization: Bearer ' . parent::$apiKey,
-            'Content-Type: application/json',
-            'Prefer: return=minimal'
-        ]);
-        
-        // Aqui está o ajuste correto
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data); // Configurando os dados
+public function updateEndereco(
+    $id_endereco,
+    $logradouro,
+    $bairro,
+    $cidade,
+    $cep,
+    $numero,
+    $complemento,
+    $estado
+) {
+    $url = parent::$supabaseURL . "endereco?id_endereco=eq." . $id_endereco;
+    $data = [
+        "logradouro" => $logradouro,
+        "bairro" => $bairro,
+        "cidade" => $cidade,
+        "cep" => $cep,
+        "numero" => $numero,
+        "complemento" => $complemento,
+        "estado" => $estado,
+    ];
     
-        // Adicionar o caminho para o arquivo cacert.pem para resolver problemas SSL
-        curl_setopt($ch, CURLOPT_CAINFO, parent::$path);
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PATCH");
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "apikey: " . parent::$apiKey,
+        "Authorization: " . parent::$authorization,
+        "Content-Type: application/json",
+    ]);
+    curl_setopt(
+        $ch,
+        CURLOPT_CAINFO,
+        $_SERVER["DOCUMENT_ROOT"] . parent::$path
+    );
+    $response = curl_exec($ch);
     
-        // Executar e checar resposta
-        $response = curl_exec($ch);
-
-        $responseData = json_decode($response, true);
-        print_r($responseData);
-        
-        if (curl_errno($ch)) {
-            echo 'Erro cURL: ' . curl_error($ch);
-        } else {
-            echo 'Cliente editado com sucesso!';
-        }
-        
-        curl_close($ch);
-    
-        return $response; // Retorna a resposta para o chamador da função
+    if (curl_errno($ch)) {
+        echo "Erro cURL: " . curl_error($ch);
     }
-        
-    public function deletarCliente($clienteId){
-
-        $url = parent::$supabaseURL . 'cliente?id_cliente=eq.' . $clienteId; // Endpoint para editar um cliente específico
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE"); // Alterar para DELETE
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'apikey: ' . parent::$apiKey,
-            'Authorization: Bearer ' . parent::$apiKey,
-            'Content-Type: application/json',
-            'Prefer: return=minimal'
-        ]);
     
-        // Adicionar o caminho para o arquivo cacert.pem para resolver problemas SSL
-        curl_setopt($ch, CURLOPT_CAINFO, parent::$path);
-    
-        // Executar e checar resposta
-        $response = curl_exec($ch);
-        if (curl_errno($ch)) {
-            echo 'Erro cURL: ' . curl_error($ch);
-        } else {
-            // Verificar a resposta da API
-            if (curl_getinfo($ch, CURLINFO_HTTP_CODE) === 204) {
-                // Redirecionar para a página inicial
-                header('Location: listar_Clientes.php'); // Altere para a URL da sua página inicial
-                exit; // Sempre chame exit após um redirecionamento
-            } else {
-                return "Erro ao deletar o cliente: " . $response; // Exibir resposta de erro se necessária
-            }
-        }
-        curl_close($ch);
-    }
-*/
+    curl_close($ch);
 
-
+    return $response;
 }
 
 
+}
