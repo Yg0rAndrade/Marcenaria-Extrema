@@ -1,68 +1,50 @@
 <?php
 include_once "db.php";
 
-class FornecedorModel extends Db
+class UsuarioModel extends Db
 {
-    public function insertEndereco(
-        $logradouro,
-        $bairro,
-        $cidade,
-        $cep,
-        $numero,
-        $complemento,
-        $estado
-    ) {
-        $url = parent::$supabaseURL . "endereco";
 
-        $data = [
-            "logradouro" => $logradouro,
-            "bairro" => $bairro,
-            "cidade" => $cidade,
-            "cep" => $cep,
-            "numero" => $numero,
-            "complemento" => $complemento,
-            "estado" => $estado,
-        ];
+    #Irá retornar o id do tipo de usuário (1 para adm e 2 para usuários normais)
+    public function insertTipo(
+        $id,
+    ) {
+        $url = parent::$supabaseURL . "tipo_user" ."?id=eq.$id" ."&select=";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             "apikey: " . parent::$apiKey,
             "Authorization: " . parent::$authorization,
             "Content-Type: application/json",
-            "Prefer: return=representation",
         ]);
         curl_setopt(
             $ch,
             CURLOPT_CAINFO,
             $_SERVER["DOCUMENT_ROOT"] . parent::$path
         );
+
         $response = curl_exec($ch);
         if (curl_errno($ch)) {
             echo "Erro cURL: " . curl_error($ch);
         }
         curl_close($ch);
+
         $data = json_decode($response, true);
-        return $data[0]["id_endereco"];
+
+        return $data[0]["id"];
     }
 
-    // Método para inserir o fornecedor
-    public function insertFornecedor(
+    // Método para inserir o usuário
+    public function insertUsuario(
         $nome,
-        $telefone,
-        $cnpj,
-        $id_endereco,
-        $email
+        $sobrenome,
+        #$senha
     ) {
-        $url = parent::$supabaseURL . "fornecedor";
+        $url = parent::$supabaseURL . "users";
         $data = [
             "nome" => $nome,
-            "telefone" => $telefone,
-            "cnpj" => $cnpj,
-            "id_endereco" => $id_endereco,
-            "email" => $email,
+            "sobrenome" => $sobrenome,
+            #"senha" => $senha
         ];
 
         $ch = curl_init();
@@ -89,40 +71,23 @@ class FornecedorModel extends Db
         return $response;
     }
 
-    public function insertFornecedorComEndereco(
+    public function insertUsuarioComTipo(
         $nome,
-        $telefone,
-        $cnpj,
-        $email,
-        $logradouro,
-        $bairro,
-        $cidade,
-        $cep,
-        $numero,
-        $complemento,
-        $estado
+        $sobrenome,
+        $id,
     ) {
-        $id_endereco = $this->insertEndereco(
-            $logradouro,
-            $bairro,
-            $cidade,
-            $cep,
-            $numero,
-            $complemento,
-            $estado
+        $id = $this->insertTipo(
+            $id,
         );
-        $response = $this->insertFornecedor(
+        $response = $this->insertUsuario(
             $nome,
-            $telefone,
-            $cnpj,
-            $id_endereco,
-            $email
+            $sobrenome,
         );
         return $response;
     }
-    public function getAllFornecedores()
+    public function getAllUsuarios()
     {
-        $url = parent::$supabaseURL . "fornecedores_ativos" . "?select=*";
+        $url = parent::$supabaseURL . "users" . "?select=*";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -147,9 +112,9 @@ class FornecedorModel extends Db
 
         return $data;
     }
-    public function getoneFornecedor($id)
+    public function getoneUser($id)
     {
-        $url = parent::$supabaseURL . "fornecedor" ."?id_fornecedor=eq.$id" ."&select=";
+        $url = parent::$supabaseURL . "users" ."?id_users=eq.$id" ."&select=";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -174,55 +139,18 @@ class FornecedorModel extends Db
 
         return $data;
     }
-    public function getoneEndereco($id)
-{
-    // Define a URL para buscar o endereço
-    $url = parent::$supabaseURL . "endereco" . "?id_endereco=eq.$id" . "&select=*";
-    $ch = curl_init();
 
-    // Configurações do cURL
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        "apikey: " . parent::$apiKey,
-        "Authorization: " . parent::$authorization,
-        "Content-Type: application/json",
-    ]);
-    curl_setopt(
-        $ch,
-        CURLOPT_CAINFO,
-        $_SERVER["DOCUMENT_ROOT"] . parent::$path
-    );
-
-    // Executa a requisição
-    $response = curl_exec($ch);
-
-    // Verifica por erros no cURL
-    if (curl_errno($ch)) {
-        echo "Erro cURL: " . curl_error($ch);
-    }
-
-    // Fecha a conexão
-    curl_close($ch);
-
-    // Decodifica a resposta JSON para um array associativo
-    $data = json_decode($response, true);
-
-    return $data;
-}
-public function updateFornecedor(
-    $id_fornecedor,
+public function updateUsuario(
+    $id_usuario,
     $nome,
-    $email,
-    $cnpj,
-    $telefone,
+    $sobrenome,
+    #$senha,
 ) {
-    $url = parent::$supabaseURL . "fornecedor?id_fornecedor=eq." . $id_fornecedor;
+    $url = parent::$supabaseURL . "users?id_users=eq." . $id_usuario;
     $data = [
-        "nome" => $nome, 
-        "email" => $email,          
-        "cnpj" => $cnpj,    
-        "telefone" => $telefone,
+        "nome" => $nome,
+        "sobrenome" => $sobrenome,  
+        #"senha" => $senha,          
     ];
     
     $ch = curl_init();
@@ -250,8 +178,10 @@ public function updateFornecedor(
 
     return $response;
 }
-public function deleteFornecedor($id_fornecedor) {
-    $url = parent::$supabaseURL . "fornecedor?id_fornecedor=eq." . $id_fornecedor;
+
+/*
+public function deleteUser($id_usuario) {
+    $url = parent::$supabaseURL . "user?id_usuario=eq." . $id_usuario;
     $data = [
         "deletado" => true
     ];
@@ -278,53 +208,5 @@ public function deleteFornecedor($id_fornecedor) {
 
     return $response;
 }
-
-public function updateEndereco(
-    $id_endereco,
-    $logradouro,
-    $bairro,
-    $cidade,
-    $cep,
-    $numero,
-    $complemento,
-    $estado
-) {
-    $url = parent::$supabaseURL . "endereco?id_endereco=eq." . $id_endereco;
-    $data = [
-        "logradouro" => $logradouro,
-        "bairro" => $bairro,
-        "cidade" => $cidade,
-        "cep" => $cep,
-        "numero" => $numero,
-        "complemento" => $complemento,
-        "estado" => $estado,
-    ];
-    
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PATCH");
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        "apikey: " . parent::$apiKey,
-        "Authorization: " . parent::$authorization,
-        "Content-Type: application/json",
-    ]);
-    curl_setopt(
-        $ch,
-        CURLOPT_CAINFO,
-        $_SERVER["DOCUMENT_ROOT"] . parent::$path
-    );
-    $response = curl_exec($ch);
-    
-    if (curl_errno($ch)) {
-        echo "Erro cURL: " . curl_error($ch);
-    }
-    
-    curl_close($ch);
-
-    return $response;
-}
-
-
+*/
 }
