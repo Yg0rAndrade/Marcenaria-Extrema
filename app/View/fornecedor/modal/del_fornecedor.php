@@ -31,7 +31,7 @@ if (deleteModal) {
 
         // Define o href da âncora com o ID do fornecedor
         var confirmDelete = deleteModal.querySelector('#deletar_fornecedor');
-        confirmDelete.href = 'modal/del_fornecedorCodigo.php?id=' + fornecedorId;
+        confirmDelete.href = 'View/fornecedor/modal/del_fornecedorCodigo.php?id='  + fornecedorId;
     });
 }
 

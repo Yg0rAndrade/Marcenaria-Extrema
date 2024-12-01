@@ -8,7 +8,7 @@ $cliente_deletado = $cliente->deleteCliente($_GET['id']);
 $_SESSION['mensagem'] = "Cliente deletado";
 $_SESSION['mensagem_tipo'] = "danger"; // Sucesso para o tipo de alerta
 // Redireciona para a página de índice com a mensagem
-header("Location: ../index.php");
+header("location: ../../../index.php?page=cliente");
 exit();
 ob_end_flush();
 ?>

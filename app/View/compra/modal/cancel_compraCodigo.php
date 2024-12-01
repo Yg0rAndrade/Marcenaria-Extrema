@@ -8,7 +8,7 @@ $compra_deletado = $compra->cancelCompra($_GET['id']);
 $_SESSION['mensagem'] = "Compra cancelada";
 $_SESSION['mensagem_tipo'] = "danger"; // Sucesso para o tipo de alerta
 // Redireciona para a página de índice com a mensagem
-header("Location: ../index.php");
+header("location: ../../../index.php?page=compra");
 exit();
 ob_end_flush();
 ?>

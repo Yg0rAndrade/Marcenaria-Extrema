@@ -32,7 +32,7 @@ class ClienteModel extends Db
             "apikey: " . parent::$apiKey,
             "Authorization: " . parent::$authorization,
             "Content-Type: application/json",
-            "Prefer: return=representation",
+            "Prefer: return=representation"
         ]);
         curl_setopt(
             $ch,

@@ -215,7 +215,7 @@ public function updateFornecedor(
     $nome,
     $email,
     $cnpj,
-    $telefone,
+    $telefone
 ) {
     $url = parent::$supabaseURL . "fornecedor?id_fornecedor=eq." . $id_fornecedor;
     $data = [

@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       // Mensagem para a sessão
       $_SESSION['mensagem'] = "Fornecedor $nome cadastrado com sucesso!";
       $_SESSION['mensagem_tipo'] = "success"; // Sucesso para o tipo de alerta
-      header("Location: ../index.php");
+      header("location: ../../../index.php?page=fornecedor");
       exit();
    }
 }

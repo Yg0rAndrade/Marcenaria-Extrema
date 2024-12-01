@@ -9,7 +9,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <!-- Âncora envolvendo o botão -->
-                <a id="finish_compra" class="btn btn-success" href="#">
+                <a id="btn_finish_compra" class="btn btn-success" href="#">
                     Concluir Compra
                 </a>
             </div>
@@ -17,21 +17,18 @@
     </div>
 </div>
 
-
 <script>
     var deleteModal = document.getElementById('finish_compra');
-
 if (deleteModal) {
     deleteModal.addEventListener('show.bs.modal', function (event) {
         // Captura o botão que abriu o modal
         var button = event.relatedTarget;
-
         // Obtém o ID do compra do atributo data-compra
         var compraId = button.getAttribute('data-compra');
 
         // Define o href da âncora com o ID do compra
-        var confirmDelete = deleteModal.querySelector('#finish_compra');
-        confirmDelete.href = 'modal/finish_compraCodigo.php?id=' + compraId;
+        var confirmDelete = document.getElementById('btn_finish_compra');
+        confirmDelete.href = 'View/compra/modal/finish_compraCodigo.php?id=' + compraId;
     });
 }
 

@@ -7,7 +7,7 @@
       </div>
       <div class="modal-body">
         <div class="card-body">
-          <form class="row g-3" method="POST" action="modal/add_fornecedorCodigo.php">
+          <form class="row g-3" method="POST" action="View/fornecedor/modal/add_fornecedorCodigo.php">
             <h6 class="fw-bold">Dados do Fornecedor</h6>
             <div class="col-md-6">
               <label for="add_nomeFornecedor" class="form-label">Nome</label>
@@ -122,16 +122,4 @@
       alert('Por favor, insira um CEP válido.');
     }
   });
-
-  // Usando JavaScript para adicionar a classe hide-toast após 2.5 segundos
-  setTimeout(function() {
-    var toastElement = document.querySelector('.toast');
-    if (toastElement) {
-      toastElement.classList.add('hide-toast');
-      // Remover a classe 'show' após a animação para garantir que o toast desapareça completamente
-      setTimeout(function() {
-        toastElement.classList.remove('show');
-      }, 2000); // Espera o tempo da animação (2 segundos) para remover a classe 'show'
-    }
-  }, 2500);  // 2500 ms = 2.5 segundos
 </script>

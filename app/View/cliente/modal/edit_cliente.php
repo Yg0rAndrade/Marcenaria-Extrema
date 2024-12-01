@@ -2,12 +2,12 @@
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Cadastro de Cliente</h5>
+        <h5 class="modal-title">Editar Cliente</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="card-body">
-          <form class="row g-3" method="POST" action="modal/edit_clienteCodigo.php">
+          <form class="row g-3" method="POST" action="View/cliente/modal/edit_clienteCodigo.php">
             <h6 class="fw-bold">Dados do Cliente</h6>
             <input type="hidden" id="edit_cliente_id" name="cliente_id"> <!-- Campo Hidden para ID -->
             <input type="hidden" id="edit_endereco_id" name="endereco_id"> <!-- Campo Hidden para ID -->
@@ -95,16 +95,18 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>    
-                <button type="submit" class="btn btn-primary">Editar Cliente</button>
+                <button type="submit" class="btn btn-info">Editar Cliente</button>
             </div>
           </form>
         </div>
       </div>
     </div>
   </div>
-</div>
+  
 
+</div>
 <script>
+  console.log("Hello, World!")
   // Máscara CPF/CNPJ
   document.getElementById('edit_cpf_cnpj').addEventListener('input', function(e) {
     let cpf = e.target.value.replace(/\D/g, ''); // Remove qualquer caracter não numérico
@@ -140,12 +142,13 @@
   // Preencher dados do cliente ao abrir o modal
   var edit_cliente = document.getElementById('edit_cliente');
   if (edit_cliente) {
+    
     edit_cliente.addEventListener('show.bs.modal', function(event) {
       var button = event.relatedTarget;
       var clienteId = button.getAttribute('data-cliente'); // ID do cliente passado pelo botão
 
       // Buscar os dados do cliente
-      fetch('modal/get_cliente.php?id=' + clienteId)
+      fetch('View/cliente/modal/get_cliente.php?id=' + clienteId)
         .then(response => response.json())
         .then(data => {
           if (data.success && data.cliente.length > 0) {
@@ -164,7 +167,7 @@
             // Verificar se há um ID de endereço
             if (cliente.id_endereco) {
               // Buscar o endereço do cliente
-              fetch('modal/get_endereco.php?id=' + cliente.id_endereco)
+              fetch('View/cliente/modal/get_endereco.php?id=' + cliente.id_endereco)
                 .then(response => response.json())
                 .then(enderecoData => {
                   if (enderecoData.success && enderecoData.endereco.length > 0) {

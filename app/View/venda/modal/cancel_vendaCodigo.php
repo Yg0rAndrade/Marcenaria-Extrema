@@ -8,7 +8,7 @@ $venda_deletado = $venda->cancelVenda($_GET['id']);
 $_SESSION['mensagem'] = "Venda cancelada";
 $_SESSION['mensagem_tipo'] = "danger"; // Sucesso para o tipo de alerta
 // Redireciona para a página de índice com a mensagem
-header("Location: ../index.php");
-exit();
+header("location: ../../../index.php?page=venda");
+      exit();
 ob_end_flush();
 ?>

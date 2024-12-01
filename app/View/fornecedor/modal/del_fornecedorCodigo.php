@@ -8,7 +8,7 @@ $fornecedor_deletado = $fornecedor->deleteFornecedor($_GET['id']);
 $_SESSION['mensagem'] = "Fornecedor deletado";
 $_SESSION['mensagem_tipo'] = "danger"; // Sucesso para o tipo de alerta
 // Redireciona para a página de índice com a mensagem
-header("Location: ../index.php");
+header("location: ../../../index.php?page=fornecedor");
 exit();
 ob_end_flush();
 ?>

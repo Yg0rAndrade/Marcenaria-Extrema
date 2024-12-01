@@ -1,18 +1,12 @@
 <?php
-
-//Arquivo necessário para que  o programa funcione.        
-require_once '../../Model/CompraModel.php';
-
-//Cria a classe para adicionar        
+include_once "../../Model/CompraModel.php";    
 $compra = new CompraModel();
-
-//Puxa o nome dos clientes e produtos
 $produtos = $compra->getAllProdutos();
 $fornecedores = $compra->getAllFornecedores();
 ?>
 
 <div class="modal fade" id="add_compra" tabindex="-1">
-  <div class="modal-dialog modal-l">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Cadastro de Compra</h5>
@@ -20,46 +14,58 @@ $fornecedores = $compra->getAllFornecedores();
       </div>
       <div class="modal-body">
         <div class="card-body">
-          <form class="row g-3" method="POST" action="modal/add_compraCodigo.php">
-            <h6 class="fw-bold">Cadastro de Compra</h6>
+          <form class="row g-3" method="POST" action="View/compra/modal/add_compraCodigo.php">
+            <h6 class="fw-bold">Dados da Compra</h6>
+
             <div class="col-md-6">
-              <label for="add_nomeFornecedor" class="form-label">Fornecedor</label>
-              <select class="form-select" aria-label="Default select example" id="fornecedor" name="fornecedor" required>
-                <option value="">Fornecedor</option>
-                <?php foreach ($fornecedores as $fornecedor): //Irá puxar os fornecedores da tabela ?>
+              <label for="fornecedor" class="form-label">Fornecedor</label>
+              <select class="form-select" id="fornecedor" name="fornecedor" required>
+                <option value="">Selecionar Fornecedor</option>
+                <?php foreach ($fornecedores as $fornecedor): ?>
                   <option value="<?php echo htmlspecialchars($fornecedor['id_fornecedor']); ?>">
                     <?php echo htmlspecialchars($fornecedor['nome']); ?>
                   </option>
                 <?php endforeach; ?>
               </select>
             </div>
+
             <div class="col-md-6">
-              <label for="add_nomeProduto" class="form-label">Produto</label>
-              <select class="form-select" aria-label="Default select example" id="id_produto" name="produto" required onchange="atualizarValorUnitario()">
-                <option value="">Produto</option>
-                <?php foreach ($produtos as $produto): //Irá puxar os produtos da tabela ?>
-                  <option value="<?php echo htmlspecialchars($produto['id_produto']); ?>"
-                    data-valor="<?php echo htmlspecialchars($produto['valor_unit']); //Váriavel utilizada para jogar o valor no campo do valor unitario ?>">
-                    <?php echo htmlspecialchars($produto['descricao']); ?>
+              <label for="id_produto" class="form-label">Produto</label>
+              <select class="form-select" id="id_produto" name="produto" required onchange="atualizarValorUnitario()">
+                <option value="">Selecionar Produto</option>
+                <?php foreach ($produtos as $produto): ?>
+                  <option value="<?php echo htmlspecialchars($produto['id_produto']); ?>" 
+                          data-valor="<?php echo htmlspecialchars($produto['valor_unit']); ?>">
+                    <?php echo htmlspecialchars($produto['nome']); ?>
                   </option>
                 <?php endforeach; ?>
               </select>
             </div>
+
             <div class="col-md-6">
-              <label for="add_qtdCompra" class="form-label">Quantidade</label>
-              <input type="number" id="qtd" name="qtd" required oninput="calcularValorTotal()">
+              <label for="qtd" class="form-label">Quantidade</label>
+              <input type="number" class="form-control" id="qtd" name="qtd" required oninput="calcularValorTotal()">
             </div>
+
             <div class="col-md-6">
-              <label for="add_valor_unitProduto" class="form-label">Valor Unitário</label>
-              <input type="number" id="valor_unitProduto" name="valor_unitProduto" required readonly oninput="calcularValorTotal()">
+              <label for="valor_unitProduto" class="form-label">Valor Unitário</label>
+              <div class="input-group">
+                <span class="input-group-text">R$</span>
+                <input type="number" class="form-control" id="valor_unitProduto" name="valor_unitProduto" readonly required oninput="calcularValorTotal()">
+              </div>
             </div>
-            <div class="col-md-6">
-              <label for="add_totalCompra" class="form-label">Valor Total</label>
-              <input type="text" id="totalCompra" name="totalCompra" readonly><br><br>
-            </div>            
+
+            <div class="col-md-12">
+              <label for="totalCompra" class="form-label">Valor Total</label>
+              <div class="input-group">
+                <span class="input-group-text">R$</span>
+                <input type="text" class="form-control" id="totalCompra" name="totalCompra" readonly>
+              </div>
+            </div>
+
             <div class="modal-footer">
               <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-              <button type="submit" class="btn btn-success">Cadastrar Fornecedor</button>
+              <button type="submit" class="btn btn-success">Cadastrar Compra</button>
             </div>
           </form>
         </div>
@@ -67,40 +73,25 @@ $fornecedores = $compra->getAllFornecedores();
     </div>
   </div>
 </div>
-<script>
-  // Usando JavaScript para adicionar a classe hide-toast após 2.5 segundos
-  setTimeout(function () {
-    var toastElement = document.querySelector('.toast');
-    if (toastElement) {
-      toastElement.classList.add('hide-toast');
-      // Remover a classe 'show' após a animação para garantir que o toast desapareça completamente
-      setTimeout(function () {
-        toastElement.classList.remove('show');
-      }, 2000); // Espera o tempo da animação (2 segundos) para remover a classe 'show'
-    }
-  }, 2500);  // 2500 ms = 2.5 segundos
 
+<script>
   function atualizarValorUnitario() {
     const select = document.getElementById('id_produto');
     const valorUnitarioInput = document.getElementById('valor_unitProduto');
     const selectedOption = select.options[select.selectedIndex];
-
     if (selectedOption.value) {
-      // Obtém o valor unitário do atributo data
       const valorUnitario = selectedOption.getAttribute('data-valor');
-      valorUnitarioInput.value = valorUnitario; // Atualiza o valor no campo de valor unitário
+      valorUnitarioInput.value = valorUnitario;
     } else {
-      valorUnitarioInput.value = ''; // Limpa o valor caso nenhum produto seja selecionado
+      valorUnitarioInput.value = '';
     }
-
-    calcularValorTotal(); // Atualiza o valor total com o novo valor unitário
+    calcularValorTotal();
   }
 
   function calcularValorTotal() {
     const quantidade = parseFloat(document.getElementById('qtd').value) || 0;
     const valorUnitario = parseFloat(document.getElementById('valor_unitProduto').value) || 0;
-
     const valorTotal = quantidade * valorUnitario;
     document.getElementById('totalCompra').value = valorTotal.toFixed(2);
-  }  
+  }
 </script>

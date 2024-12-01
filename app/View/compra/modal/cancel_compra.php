@@ -27,11 +27,11 @@
             var button = event.relatedTarget;
 
             // Obtém o ID do venda do atributo data-venda
-            var vendaId = button.getAttribute('data-compra');
+            var compraId = button.getAttribute('data-compra');
 
             // Define o href da âncora com o ID do venda
             var confirmDelete = deleteModal.querySelector('#confirmar_cancelamento');
-            confirmDelete.href = 'modal/cancel_compraCodigo.php?id=' + vendaId;
+            confirmDelete.href =  'View/compra/modal/cancel_compraCodigo.php?id=' + compraId;
         });
     }
 

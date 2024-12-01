@@ -1,4 +1,5 @@
 <?php
+echo "Edidanto Cliente...";
 include_once "../../../Model/ClienteModel.php";
 session_start();
 ob_start();
@@ -43,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
          $_SESSION['mensagem'] = "Cliente e endereço editados com sucesso!";
          $_SESSION['mensagem_tipo'] = "info"; // Sucesso para o tipo de alerta
       // Redireciona para a página de índice com a mensagem
-      header("Location: ../index.php");
+      header("location: ../../../index.php?page=cliente");
       exit();
 
    }

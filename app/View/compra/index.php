@@ -1,17 +1,8 @@
 <?php
-$title = "Compras";
-if (session_status() === PHP_SESSION_NONE) {
-   session_start();
-}
-include_once "../reusable_components/head.php";
-include_once "../reusable_components/header.php";
-include_once "../reusable_components/aside.php";
+$page = "Compras";
 include_once "../Alerts/alert.php";
 include_once "../../Model/CompraModel.php";
 ?>
-
-<main id="main" class="main">
-
    <?php
    $page = "Compras";
    include_once "../reusable_components/page_title.php";
@@ -49,16 +40,34 @@ include_once "../../Model/CompraModel.php";
                   echo "<td>" . $compraItem["nome_produto"] . "</td>";
                   echo "<td>" . $compraItem["qtd_compra"] . "</td>";
                   echo "<td> R$ " . $compraItem["valor_total"] . "</td>";
-                  echo "<td>
-                  <div class='d-flex justify-content-center gap-2'>
-                      <a href='#" . "' class='btn btn-sm btn-info' data-bs-toggle='modal' data-bs-target='#finish_compra' data-compra='" . $compraItem['id_compra'] . "'>
-                          <i class='ri-pencil-line'></i>
-                      </a>              
-                      <a href='#' class='btn btn-sm btn-danger' data-bs-toggle='modal' data-bs-target='#cancel_compra' data-compra='" . $compraItem['id_compra'] . "'>
-                          <i class='ri-delete-bin-2-line'></i>
-                      </a>
-                  </div>
-                  </td>";
+                  if ($compraItem["concluido"] === null){
+                     echo "<td>
+                     <div class='d-flex justify-content-center gap-2'>
+                         <a href='#" . "' class='btn btn-sm btn-info' data-bs-toggle='modal' data-bs-target='#finish_compra' data-compra='". $compraItem['id_compra'] ."'>
+                             <i class='ri-checkbox-blank-circle-line'></i>
+                         </a>              
+                         <a href='#' class='btn btn-sm btn-danger' data-bs-toggle='modal' data-bs-target='#cancel_compra' data-compra='" . $compraItem['id_compra'] . "'>
+                             <i class='ri-checkbox-blank-circle-line'></i>
+                         </a>
+                     </div>
+                     </td>";
+                  }
+                  if ($compraItem["concluido"] === true){
+                     echo "<td>
+                     <div class='d-flex justify-content-center gap-2'>
+                             <i class='ri-checkbox-circle-fill'></i>
+                             <p class='text-success'>CONCLUIDO</p>                                     
+                     </div>
+                     </td>";
+                  }
+                  if ($compraItem["concluido"] === false){
+                     echo "<td>
+                     <div class='d-flex justify-content-center gap-2'>
+                             <i class='ri-close-circle-fill'></i>
+                             <p class='text-danger'>CANCELADO</p>           
+                     </div>
+                     </td>";
+                  }
                   echo "</tr>";
                }
                ?>
@@ -67,7 +76,7 @@ include_once "../../Model/CompraModel.php";
       </div>
    </div>
 
-</main>
+
 <script>
    // Usando JavaScript para remover o toast após 2.5 segundos
    setTimeout(function () {
@@ -84,5 +93,4 @@ include_once "../../Model/CompraModel.php";
 include_once "modal/add_compra.php";
 include_once "modal/finish_compra.php";
 include_once "modal/cancel_compra.php";
-include_once "../reusable_components/footer.php";
 ?>

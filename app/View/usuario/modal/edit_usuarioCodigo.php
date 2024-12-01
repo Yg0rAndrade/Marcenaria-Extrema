@@ -1,31 +1,30 @@
 <?php
-include_once "../../../Model/UsuarioModel.php";
+echo "Editando Usuario..";
+include_once "../../../Model/UserModel.php";
 session_start();
 ob_start();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
    // Verificar se todos os campos necessários estão presentes
-   if (isset($_POST['nome'], $_POST['sobrenome'])) {
+   if (isset($_POST['edit_usuario_id'])) {
 
       // Dados do usuario
-      $id = trim($_POST['usuario_id']);
-      $nome = trim($_POST['nome']);
-      $sobrenome = trim($_POST['sobrenome']);
-      $senha = trim($_POST['senha']);
+      $uuid = trim($_POST['edit_usuario_id']);
+      $nome = trim($_POST['edit_nomeUsuario']);
+      $sobrenome = trim($_POST['edit_sobrenomeUsuario']);
+      $cargo = trim($_POST['edit_cargoUsuario']);
 
       // Instanciar o modelo de usuario
-      $usuarioModel = new UsuarioModel();
+      $usuarioModel = new User();
 
       // Atualizar dados do usuario
-      $resultado_usuario = $usuarioModel->updateUsuario($id, $nome,  $sobrenome, $senha);
-      
+      $resultado_usuario = $usuarioModel->updateUsuario($uuid, $nome,  $sobrenome, $cargo);
       // Verificar se as atualizações ocorreram com sucesso
-         $_SESSION['mensagem'] = "Fornecedor e endereço editados com sucesso!";
+         $_SESSION['mensagem'] = "Usuário com sucesso!";
          $_SESSION['mensagem_tipo'] = "info"; // Sucesso para o tipo de alerta
       // Redireciona para a página de índice com a mensagem
-      header("Location: ../index.php");
+      header("location: ../../../index.php?page=usuario");
       exit();
-
    }
 }
 

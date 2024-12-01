@@ -7,7 +7,7 @@
       </div>
       <div class="modal-body">
         <div class="card-body">
-          <form class="row g-3" method="POST" action="modal/add_clienteCodigo.php">
+          <form class="row g-3" method="POST" action="View/cliente/modal/add_clienteCodigo.php">
             <h6 class="fw-bold">Dados do Cliente</h6>
             <div class="col-md-6">
               <label for="add_nomeCliente" class="form-label">Nome</label>

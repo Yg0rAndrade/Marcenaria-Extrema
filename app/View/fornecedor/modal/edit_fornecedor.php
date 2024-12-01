@@ -2,12 +2,12 @@
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Cadastro de Fornecedor</h5>
+        <h5 class="modal-title">Editar Fornecedor</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="card-body">
-          <form class="row g-3" method="POST" action="modal/edit_fornecedorCodigo.php">
+          <form class="row g-3" method="POST" action="View/fornecedor/modal/edit_fornecedorCodigo.php">
             <h6 class="fw-bold">Dados do Fornecedor</h6>
             <input type="hidden" id="edit_fornecedor_id" name="fornecedor_id"> <!-- Campo Hidden para ID -->
             <input type="hidden" id="edit_endereco_id" name="endereco_id"> <!-- Campo Hidden para ID -->
@@ -87,7 +87,7 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>    
-                <button type="submit" class="btn btn-primary">Editar Fornecedor</button>
+                <button type="submit" class="btn btn-info">Editar Fornecedor</button>
             </div>
           </form>
         </div>
@@ -97,7 +97,7 @@
 </div>
 
 <script>
-  // Máscara CPF/CNPJ
+ 
   document.getElementById('edit_cnpj').addEventListener('input', function(e) {
     let cpf = e.target.value.replace(/\D/g, ''); // Remove qualquer caracter não numérico
     cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2') // Adiciona o ponto após o primeiro bloco de 3 dígitos
@@ -137,7 +137,7 @@
       var fornecedorId = button.getAttribute('data-fornecedor'); // ID do fornecedor passado pelo botão
 
       // Buscar os dados do fornecedor
-      fetch('modal/get_fornecedor.php?id=' + fornecedorId)
+      fetch('View/fornecedor/modal/get_fornecedor.php?id=' + fornecedorId)
         .then(response => response.json())
         .then(data => {
           if (data.success && data.fornecedor.length > 0) {
@@ -154,7 +154,7 @@
             // Verificar se há um ID de endereço
             if (fornecedor.id_endereco) {
               // Buscar o endereço do fornecedor
-              fetch('modal/get_endereco.php?id=' + fornecedor.id_endereco)
+              fetch('View/fornecedor/modal/get_endereco.php?id=' + fornecedor.id_endereco)
                 .then(response => response.json())
                 .then(enderecoData => {
                   if (enderecoData.success && enderecoData.endereco.length > 0) {

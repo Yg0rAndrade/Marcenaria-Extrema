@@ -8,7 +8,6 @@ $venda_deletado = $venda->finishVenda($_GET['id']);
 $_SESSION['mensagem'] = "Venda concluida";
 $_SESSION['mensagem_tipo'] = "success"; // Sucesso para o tipo de alerta
 // Redireciona para a página de índice com a mensagem
-header("Location: ../index.php");
+header("location: ../../../index.php?page=venda");
 exit();
 ob_end_flush();
-?>

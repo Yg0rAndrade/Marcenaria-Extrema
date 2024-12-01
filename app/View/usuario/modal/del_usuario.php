@@ -31,7 +31,7 @@ if (deleteModal) {
 
         // Define o href da âncora com o ID do usuario
         var confirmDelete = deleteModal.querySelector('#deletar_usuario');
-        confirmDelete.href = 'modal/del_usuarioCodigo.php?id=' + usuarioId;
+        confirmDelete.href = 'View/usuario/modal/del_usuarioCodigo.php?id=' + usuarioId;
     });
 }
 

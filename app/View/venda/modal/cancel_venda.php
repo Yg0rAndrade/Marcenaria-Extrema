@@ -31,7 +31,7 @@ if (deleteModal) {
 
         // Define o href da âncora com o ID do venda
         var confirmDelete = deleteModal.querySelector('#cancelar_venda');
-        confirmDelete.href = 'modal/cancel_vendaCodigo.php?id=' + vendaId;
+        confirmDelete.href = 'View/venda/modal/cancel_vendaCodigo.php?id=' + vendaId;
     });
 }
 
