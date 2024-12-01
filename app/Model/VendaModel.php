@@ -76,7 +76,7 @@ class VendaModel extends Db
     public function getAllClientes() //Busca todos os clientes cadastrados
     {
 
-        $url = parent::$supabaseURL . 'cliente' . '?select=*'; // Irá buscar todos os clientes
+        $url = parent::$supabaseURL . 'clientes_ativos' . '?select=*'; // Irá buscar todos os clientes
 
         
         $ch = curl_init();
@@ -107,7 +107,7 @@ class VendaModel extends Db
     public function getAllProdutos()//Busca todos os produtos cadastrados
     {
 
-        $url = parent::$supabaseURL . 'produto' . '?select=*'; // Irá buscar todos os produtos
+        $url = parent::$supabaseURL . 'produtos_ativos' . '?select=*'; // Irá buscar todos os produtos
 
         // Inicia o processo de listagem através de cURL         
         $ch = curl_init();

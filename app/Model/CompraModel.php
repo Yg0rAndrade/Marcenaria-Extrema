@@ -76,7 +76,7 @@ class CompraModel extends Db
     public function getAllFornecedores() //Busca todos os fornecedores cadastrados
     {
 
-        $url = parent::$supabaseURL . 'fornecedor' . '?select=*'; // Irá buscar todos os fornecedores
+        $url = parent::$supabaseURL . 'fornecedores_ativos' . '?select=*'; // Irá buscar todos os fornecedores
 
         
         $ch = curl_init();
@@ -107,7 +107,7 @@ class CompraModel extends Db
     public function getAllProdutos()//Busca todos os produtos cadastrados
     {
 
-        $url = parent::$supabaseURL . 'produto' . '?select=*'; // Irá buscar todos os produtos
+        $url = parent::$supabaseURL . 'produtos_ativos' . '?select=*'; // Irá buscar todos os produtos
 
         // Inicia o processo de listagem através de cURL         
         $ch = curl_init();

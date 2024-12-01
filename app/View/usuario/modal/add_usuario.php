@@ -30,7 +30,7 @@
               <select class="form-select" id="add_tipoUsuario" name="cargo" required>
                 <option selected disabled>Selecione o Tipo</option>
                 <option value="1">Administrador</option>
-                <option value="2">Cliente</option>
+                <option value="2">Usuário</option>
               </select>
             </div>
             <div class="modal-footer">
