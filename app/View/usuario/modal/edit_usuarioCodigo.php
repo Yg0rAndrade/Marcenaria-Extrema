@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       // Atualizar dados do usuario
       $resultado_usuario = $usuarioModel->updateUsuario($uuid, $nome,  $sobrenome, $cargo);
       // Verificar se as atualizações ocorreram com sucesso
-         $_SESSION['mensagem'] = "Usuário com sucesso!";
+         $_SESSION['mensagem'] = "Usuário editado com sucesso!";
          $_SESSION['mensagem_tipo'] = "info"; // Sucesso para o tipo de alerta
       // Redireciona para a página de índice com a mensagem
       header("location: ../../../index.php?page=usuario");
